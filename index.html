@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Etiquetas</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <style>
+        @media print {
+            /* Adapte o tamanho da folha de etiquetas A4 */
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0.5cm; /* Ajuste conforme necessário para o seu layout de etiquetas */
+            }
+            
+            /* Adapte conforme necessário para o seu layout de etiquetas */
+            .etiqueta {
+                float: left;
+                width: 33.33%;
+                padding: 10px;
+                box-sizing: border-box;
+                height: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="etiquetas-container"></div>
+
+    <script>
+        function carregarBibliotecaEgerarEtiquetas() {
+            // Carregar a biblioteca JsBarcode de forma assíncrona
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js';
+            script.onload = function () {
+                gerarEtiquetas();
+            };
+            document.head.appendChild(script);
+        }
+
+        function gerarEtiquetas() {
+            var container = document.getElementById('etiquetas-container');
+            container.innerHTML = '';
+
+            for (var i = 1; i <= 21; i++) {
+                var codigo = document.getElementById('codigo' + i).value;
+
+                // Adicione a etiqueta ao contêiner
+                container.innerHTML += '<div class="etiqueta" id="etiqueta' + i + '">' +
+                    '<div>Subtítulo: ' + codigo + '</div>' +
+                    '<svg id="barcode' + i + '"></svg>' +
+                '</div>';
+
+                // Gere o código de barras usando JsBarcode
+                JsBarcode("#barcode" + i, codigo, {
+                    format: "CODE128",
+                    displayValue: false
+                });
+
+            }
+        }
+    </script>
+
+<div>
+    <form>
+        <script>
+            for (var i = 1; i <= 21; i++) {
+                document.write(
+                    '<label for="codigo' + i + '">Código' + i + ':</label>' +
+                    '<input type="text" id="codigo' + i + '" maxlength="6" required><br>'
+
+                );
+            }
+        </script>
+
+            <button type="button" onclick="carregarBibliotecaEgerarEtiquetas()">Gerar Etiquetas</button>
+        </form>
+    </div>
+</body>
+</html>
